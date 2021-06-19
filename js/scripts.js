@@ -1,10 +1,11 @@
 window.addEventListener('DOMContentLoaded', function () {
     'use strict';
-
+let timer;
     function countTimer(deadline) {
         let timerHours = document.getElementById('timer-hours');
         let timerMinutes = document.getElementById('timer-minutes');
         let timerSeconds = document.getElementById('timer-seconds');
+        let news = {}
 
         function getTimeRemaining() {
             let dateStop = new Date(deadline).getTime();
@@ -13,34 +14,38 @@ window.addEventListener('DOMContentLoaded', function () {
             let seconds = Math.floor(timeRemaining % 60);
             let minutes = Math.floor((timeRemaining / 60) % 60);
             let hours = Math.floor(timeRemaining / 60 / 60);
-            return {timeRemaining, hours, minutes, seconds};
+            news.timeRemaining = timeRemaining;
+            news.hours = hours;
+            news.minutes = minutes;
+            news.seconds = seconds;
         }
 
         function updateClock() {
-            let timer = getTimeRemaining()
+            getTimeRemaining();
             let addNull = (item) => {
                 if (item < 10) {
                     return '0' + item
                 } else {
                     return +item
-
                 }
             }
-            timerHours.innerText = addNull(timer.hours);
-            timerMinutes.innerText = addNull(timer.minutes);
-            timerSeconds.innerText = addNull(timer.seconds);
+            timerHours.innerText = addNull(news.hours);
+            timerMinutes.innerText = addNull(news.minutes);
+            timerSeconds.innerText = addNull(news.seconds);
         }
 
-        updateClock()
-        if (getTimeRemaining().timeRemaining > 0) {
-            setInterval(updateClock, 1000)
+        updateClock();
+        if (news.timeRemaining > 0) {
+            timer = setInterval(updateClock, 1000);
         } else {
             timerHours.innerText = '00';
             timerMinutes.innerText = '00';
             timerSeconds.innerText = '00';
+            clearInterval(timer);
         }
     }
-    countTimer('22 june 2021 01:10')
+
+    countTimer('22 june 2021 01:10');
 
 });
 
