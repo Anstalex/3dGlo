@@ -71,13 +71,21 @@ const toggleMenu = () => {
     const btnClose = document.querySelector('.close-btn');
     const menuItem = menu.querySelectorAll('ul>li');
 
-    const menuChange = () => {
-        menu.classList.toggle('active-menu');
+    const menuOpen = () => {
+        menu.classList.add('active-menu');
+    };
+    const menuClose = () => {
+        menu.classList.remove('active-menu');
     };
 
-    handler(btnMenu, 'click', menuChange);
-    handler(btnClose, 'click', menuChange);
-    handlerArray(menuItem, 'click', menuChange);
+    handler(document, 'click', (e)=>{
+        if (!e.target.closest('menu')&&(!e.target.closest('.menu'))) {
+            menuClose()
+        }
+    });
+    handler(btnMenu, 'click', menuOpen);
+    handler(btnClose, 'click', menuClose);
+    handlerArray(menuItem, 'click', menuClose);
 
 
 };
@@ -97,8 +105,8 @@ const togglePopup = () => {
 
     const popupShow = () => {
         popup.style.display = 'block';
-        if ((count < 38)&&(html.clientWidth>768)) {
-            count++
+        if ((count < 38) && (html.clientWidth > 768)) {
+            count+=2
             popupContent.style.left = `${count}%`;
             idAnimate = requestAnimationFrame(popupShow);
         } else {
@@ -107,22 +115,27 @@ const togglePopup = () => {
     };
 
     const popupHide = () => {
-        if ((count >= 38 && count < 100)&&(html.clientWidth>768)) {
+        if ((count >= 38 && count < 100) && (html.clientWidth > 768)) {
             idAnimate = requestAnimationFrame(popupHide);
-            count++
+            count+=2
             popupContent.style.left = `${count}%`
         } else {
             cancelAnimationFrame(popupHide)
             popup.style.display = 'none'
-            count = '-20';
+            count = -20;
         }
     };
 
+    handler(document,'click',(e)=>{
+        if (!e.target.closest('.popup-content')){
+            requestAnimationFrame(popupHide);
+        }
+    })
     handlerArray(popupBtn, 'click', () => {
-        requestAnimationFrame(popupShow)
+        requestAnimationFrame(popupShow);
     });
     handler(popupClose, 'click', () => {
-        requestAnimationFrame(popupHide)
+        requestAnimationFrame(popupHide);
     });
 
 
@@ -139,9 +152,9 @@ const scrollActive = () => {
         countScroll = html.scrollTop
         if (html.scrollTop < main.scrollHeight) {
             scrollAnimate = requestAnimationFrame(scrollDown)
-            countScroll += 5;
+            countScroll += 20;
             html.scrollTop = countScroll
-        }else {
+        } else {
             cancelAnimationFrame(scrollAnimate)
             countScroll = 0;
         }
@@ -151,11 +164,11 @@ const scrollActive = () => {
         e.preventDefault()
         requestAnimationFrame(scrollDown);
     });
-    handler(document,'wheel',() => {
+    handler(document, 'wheel', () => {
         countScroll = 0;
         cancelAnimationFrame(scrollAnimate);
     });
-    handler(document,'click',() => {
+    handler(document, 'click', () => {
         countScroll = 0;
         cancelAnimationFrame(scrollAnimate);
     });
