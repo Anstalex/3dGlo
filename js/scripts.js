@@ -1,5 +1,8 @@
+const html = document.querySelector('html')
+
 window.addEventListener('DOMContentLoaded', function () {
     'use strict';
+
 
     //Таймер
     let timer;
@@ -84,49 +87,81 @@ toggleMenu();
 //popup
 
 const togglePopup = () => {
-    let count = '-20' ;
+    let count = '-20';
     const popupContent = document.querySelector('.popup-content')
     const popup = document.querySelector('.popup');
     const popupBtn = document.querySelectorAll('.popup-btn');
     const popupClose = document.querySelector('.popup-close');
-    popup.style.transition ='all 1s ease'
+    popup.style.transition = 'all 1s ease'
     let idAnimate;
 
     const popupShow = () => {
         popup.style.display = 'block';
-        if (count < 38) {
+        if ((count < 38)&&(html.clientWidth>768)) {
             count++
             popupContent.style.left = `${count}%`;
             idAnimate = requestAnimationFrame(popupShow);
         } else {
-            console.log('элс Шоу')
-            console.log(popupContent.style.left)
-            console.log(count)
             cancelAnimationFrame(idAnimate)
         }
     };
-    
+
     const popupHide = () => {
-            if (count >= 38&&count<100) {
-                idAnimate = requestAnimationFrame(popupHide);
-                count++
-                popupContent.style.left = `${count}%`
-                console.log('иф Хайд')
-            } else {
-                console.log('элс Хайд')
-                cancelAnimationFrame(popupHide)
-                popup.style.display = 'none'
-                count = '-20';
-            }
+        if ((count >= 38 && count < 100)&&(html.clientWidth>768)) {
+            idAnimate = requestAnimationFrame(popupHide);
+            count++
+            popupContent.style.left = `${count}%`
+        } else {
+            cancelAnimationFrame(popupHide)
+            popup.style.display = 'none'
+            count = '-20';
+        }
     };
 
-    handlerArray(popupBtn, 'click', ()=>{ requestAnimationFrame(popupShow)});
-    handler(popupClose, 'click',()=>{ requestAnimationFrame(popupHide)});
+    handlerArray(popupBtn, 'click', () => {
+        requestAnimationFrame(popupShow)
+    });
+    handler(popupClose, 'click', () => {
+        requestAnimationFrame(popupHide)
+    });
 
 
 }
 togglePopup();
 
+const scrollActive = () => {
+    let countScroll = 0;
+    let scrollAnimate;
+    const btnScroll = document.querySelector('a>img')
+    const main = document.querySelector('main');
+
+    const scrollDown = () => {
+        countScroll = html.scrollTop
+        if (html.scrollTop < main.scrollHeight) {
+            scrollAnimate = requestAnimationFrame(scrollDown)
+            countScroll += 5;
+            html.scrollTop = countScroll
+        }else {
+            cancelAnimationFrame(scrollAnimate)
+            countScroll = 0;
+        }
+    }
+
+    handler(btnScroll, 'click', (e) => {
+        e.preventDefault()
+        requestAnimationFrame(scrollDown);
+    });
+    handler(document,'wheel',() => {
+        countScroll = 0;
+        cancelAnimationFrame(scrollAnimate);
+    });
+    handler(document,'click',() => {
+        countScroll = 0;
+        cancelAnimationFrame(scrollAnimate);
+    });
+}
+
+scrollActive();
 
 
 
