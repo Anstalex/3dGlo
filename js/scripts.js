@@ -58,17 +58,14 @@ window.addEventListener('DOMContentLoaded', () => {
 const handler = (item, event, callback) => {
     item.addEventListener(event, callback);
 };
-const handlerArray = function(items, event, callback) {
-    for (const key of items) {
-        key.addEventListener(event, callback);
-    }
-};
+// const handlerArray = (items, event, callback) => {
+//     for (const key of items) {
+//         key.addEventListener(event, callback);
+//     }
+// };
 
 const toggleMenu = () => {
-    const btnMenu = document.querySelector('.menu');
     const menu = document.querySelector('menu');
-    const btnClose = document.querySelector('.close-btn');
-    const menuItem = menu.querySelectorAll('ul>li');
 
     const menuOpen = () => {
         menu.classList.add('active-menu');
@@ -78,15 +75,14 @@ const toggleMenu = () => {
     };
 
     handler(document, 'click', e => {
-        if (!e.target.closest('menu') && (!e.target.closest('.menu'))) {
+        const target = e.target;
+        if (((!target.closest('menu')) && (!target.closest('.menu'))) ||
+            (target.closest('li')) || target.closest('.close-btn')) {
             menuClose();
+        } else if (target.closest('.menu')) {
+            menuOpen();
         }
     });
-    handler(btnMenu, 'click', menuOpen);
-    handler(btnClose, 'click', menuClose);
-    handlerArray(menuItem, 'click', menuClose);
-
-
 };
 
 toggleMenu();
@@ -97,8 +93,6 @@ const togglePopup = () => {
     let count = '-20';
     const popupContent = document.querySelector('.popup-content');
     const popup = document.querySelector('.popup');
-    const popupBtn = document.querySelectorAll('.popup-btn');
-    const popupClose = document.querySelector('.popup-close');
     popup.style.transition = 'all 1s ease';
     let idAnimate;
 
@@ -126,19 +120,18 @@ const togglePopup = () => {
     };
 
     handler(document, 'click', e => {
-        if (!e.target.closest('.popup-content')) {
+        const target = e.target;
+        if (target.matches('.popup-btn')) {
+            requestAnimationFrame(popupShow);
+        }
+        if (target.matches('.popup-close')) {
+            requestAnimationFrame(popupHide);
+        } else if (!target.closest('.popup-content')) {
             requestAnimationFrame(popupHide);
         }
     });
-    handlerArray(popupBtn, 'click', () => {
-        requestAnimationFrame(popupShow);
-    });
-    handler(popupClose, 'click', () => {
-        requestAnimationFrame(popupHide);
-    });
-
-
 };
+
 togglePopup();
 
 const scrollActive = () => {
@@ -175,5 +168,38 @@ const scrollActive = () => {
 
 scrollActive();
 
+//tabs
+const tabs = () => {
 
+    const tabHeader = document.querySelector('.service-header');
+    const tabs = document.querySelectorAll('.service-header-tab');
+    const tabContent = document.querySelectorAll('.service-tab');
+
+    const toggleTabContent = index => {
+        for (let i = 0; i < tabContent.length; i++) {
+            if (index === i) {
+                tabs[i].classList.add('active');
+                tabContent[i].classList.remove('d-none');
+            } else {
+                tabs[i].classList.remove('active');
+                tabContent[i].classList.add('d-none');
+            }
+        }
+    };
+
+    handler(tabHeader, 'click', event => {
+        let target = event.target;
+        target = target.closest('.service-header-tab');
+        if (target) {
+            tabs.forEach((item, i) => {
+                if (item === target) {
+                    toggleTabContent(i);
+                }
+            });
+
+        }
+    });
+};
+
+tabs();
 
