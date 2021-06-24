@@ -301,5 +301,3 @@ const slider = () => {
 };
 
 slider();
-
-//merge
