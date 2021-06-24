@@ -368,7 +368,7 @@ const connect = () => {
                     return true;
                 }
             });
-            item.value  = newArr.join(' ');
+            item.value = newArr.join(' ');
             if ((e.target.matches('#form2-name')) || (e.target.matches('#form1-name'))) {
                 inputsName.forEach(item => {
                     regExpStr(item);
@@ -390,10 +390,13 @@ const connect = () => {
                     regExpPhone(item);
                 });
             }
+
+            if (!item.value.toString().match(/[а-яёa-z0-9]/gi)) {
+                item.value = '';
+            }
         });
     });
 };
-
 
 
 connect();
