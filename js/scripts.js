@@ -333,22 +333,20 @@ const calc = () => {
 
 calc();
 
+
+//connect
 const connect = () => {
+    const inputsPhone = document.querySelectorAll('.form-phone');
+    const inputsEmail = document.querySelectorAll('.form-email');
+    const inputsName = document.querySelectorAll('.form-name');
+
     const inputText = document.querySelectorAll('input');
-    const inputName = document.getElementById('form2-name');
     const inputMessage = document.getElementById('form2-message');
-    const inputMail = document.getElementById('form2-email');
-    const inputPhone = document.getElementById('form2-phone');
 
     const regDash = item => {
         item.value = item.value.replace(/^-*/g, '').replace(/-*$/g, '').replace(/(-)\1+/g, '-');
     };
-    inputText.forEach(elem => {
-        handler(elem, 'blur', () => {
-            regDash(elem);
-        });
 
-    });
     const regExpStr = input => {
         input.value = input.value.replace(/[^а-яё\s?-]+/gi, '');
     };
@@ -363,6 +361,7 @@ const connect = () => {
 
     inputText.forEach(item => {
         handler(item, 'blur', e => {
+            regDash(item);
             const arr = item.value.split(' ');
             const newArr = arr.filter(elem => {
                 if (elem.trim() !== '') {
@@ -370,29 +369,27 @@ const connect = () => {
                 }
             });
             item.value  = newArr.join(' ');
-            if (e.target.matches('#form2-name')) {
-                regExpStr(inputName);
-                if (inputName.value !== '') {
-                    inputName.value = inputName.value[0].toUpperCase() +
-                        inputName.value.substring(1, inputName.value.length);
-                }
+            if ((e.target.matches('#form2-name')) || (e.target.matches('#form1-name'))) {
+                inputsName.forEach(item => {
+                    regExpStr(item);
+                    if (item.value !== '') {
+                        item.value = item.value[0].toUpperCase() +
+                            item.value.substring(1, item.value.length);
+                    }
+                });
+
             } else if (e.target.matches('#form2-message')) {
                 regExpStr(inputMessage);
-            } else if (e.target.matches('#form2-email')) {
-                regExpMail(inputMail);
-            } else if (e.target.matches('#form2-phone')) {
-                regExpPhone(inputPhone);
+            } else if ((e.target.matches('#form2-email')) || (e.target.matches('#form1-email'))) {
+                inputsEmail.forEach(item => {
+                    regExpMail(item);
+
+                });
+            } else if ((e.target.matches('#form2-phone')) || (e.target.matches('#form1-phone'))) {
+                inputsPhone.forEach(item => {
+                    regExpPhone(item);
+                });
             }
-
-
-            //     newArr.filter((elem) => {
-            //         if (elem.trim() !== ''){
-            //             return true
-            //         });
-            //     console.log(newArr);
-            //
-            // const res = newArr.join(',');
-            // console.log(res);
         });
     });
 };
