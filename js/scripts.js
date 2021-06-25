@@ -322,6 +322,14 @@ const photo = () => {
 photo();
 
 const calc = (price = 100) => {
+    const inputsCalc = document.querySelectorAll('.calc-item');
+    inputsCalc.forEach(item => {
+        handler(item, 'input', () => {
+            item.value = item.value.replace(/\D/g, '');
+        });
+
+    });
+
     const calcBlock = document.querySelector('.calc-block');
     const calcType = document.querySelector('.calc-type');
     const calcSquare = document.querySelector('.calc-square');
