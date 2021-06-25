@@ -321,17 +321,85 @@ const photo = () => {
 
 photo();
 
-const calc = () => {
-    const inputsCalc = document.querySelectorAll('.calc-item');
-    inputsCalc.forEach(item => {
-        handler(item, 'blur', () => {
-            item.value = item.value.replace(/\D/g, '');
-        });
+const calc = (price = 100) => {
+    const calcBlock = document.querySelector('.calc-block');
+    const calcType = document.querySelector('.calc-type');
+    const calcSquare = document.querySelector('.calc-square');
+    const calcDay = document.querySelector('.calc-day');
+    const calcCount = document.querySelector('.calc-count');
+    const totalValue = document.getElementById('total');
+    let count = 0;
+    let total;
 
+    const iterateResult = () => {
+        if (count < total) {
+            const a = total - count;
+            if (a > 1000 && a < 3000) {
+                count += 100;
+            } else if (a > 3000 && a < 20000) {
+                count += 1000;
+            } else if (a > 20000) {
+                count += 10000;
+            } else {
+                count += 10;
+            }
+            totalValue.textContent = count.toString();
+            setTimeout(iterateResult, 0.001);
+        } else if (count > total) {
+            const a = count - total;
+            if (a > 1000 && a < 3000) {
+                count  -= 100;
+            } else if (a > 3000 && a < 20000) {
+                count -= 1000;
+            } else if (a > 30000) {
+                count -= 10000;
+            } else {
+                count -= 10;
+            }
+            totalValue.textContent = count.toString();
+            setTimeout(iterateResult, 0.001);
+        } else if (count === total) {
+            totalValue.textContent = total;
+        }
+
+    };
+
+    const countSum = () => {
+        total = 0;
+        let countValue = 1;
+        let dayValue = 1;
+        const typeValue = calcType.options[calcType.selectedIndex].value;
+        const squareValue = +calcSquare.value;
+
+
+        if (calcCount.value > 1) {
+            countValue += (calcCount.value - 1) / 10;
+        }
+
+        if (calcDay.value && calcDay.value < 5) {
+            dayValue *= 2;
+        } else if (calcDay.value && calcDay.value < 10) {
+            dayValue *= 1.5;
+        }
+
+        if (squareValue && typeValue) {
+            total = price * typeValue * squareValue * countValue * dayValue;
+        }
+
+        // totalValue.textContent = total.toString();
+        iterateResult();
+    };
+
+
+
+    handler(calcBlock, 'change', e => {
+        const target = e.target;
+        if ((target.matches('select')) || (target.matches('input'))) {
+            countSum();
+        }
     });
 };
-
-calc();
+calc(100);
 
 
 //connect
