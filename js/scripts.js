@@ -390,7 +390,6 @@ const calc = (price = 100) => {
             total = Math.floor(total = price * typeValue * squareValue * countValue * dayValue);
         }
 
-        // totalValue.textContent = total.toString();
         iterateResult();
     };
 
