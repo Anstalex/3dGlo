@@ -332,7 +332,9 @@ const calc = (price = 100) => {
     let total;
 
     const iterateResult = () => {
-        if (count < total) {
+        if (count === total) {
+            totalValue.textContent = total;
+        } else if (count < total) {
             const a = total - count;
             if (a > 1000 && a < 3000) {
                 count += 100;
@@ -340,11 +342,13 @@ const calc = (price = 100) => {
                 count += 1000;
             } else if (a > 20000) {
                 count += 10000;
-            } else {
+            } else if (a < 1000 && a > 100) {
                 count += 10;
+            } else {
+                count++;
             }
             totalValue.textContent = count.toString();
-            setTimeout(iterateResult, 0.001);
+            setTimeout(iterateResult, 1);
         } else if (count > total) {
             const a = count - total;
             if (a > 1000 && a < 3000) {
@@ -353,13 +357,13 @@ const calc = (price = 100) => {
                 count -= 1000;
             } else if (a > 30000) {
                 count -= 10000;
-            } else {
+            } else if (a < 1000 && a > 100) {
                 count -= 10;
+            } else {
+                count--;
             }
             totalValue.textContent = count.toString();
-            setTimeout(iterateResult, 0.001);
-        } else if (count === total) {
-            totalValue.textContent = total;
+            setTimeout(iterateResult, 1);
         }
 
     };
@@ -383,7 +387,7 @@ const calc = (price = 100) => {
         }
 
         if (squareValue && typeValue) {
-            total = price * typeValue * squareValue * countValue * dayValue;
+            total = Math.floor(total = price * typeValue * squareValue * countValue * dayValue);
         }
 
         // totalValue.textContent = total.toString();
