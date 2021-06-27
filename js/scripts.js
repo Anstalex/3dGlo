@@ -163,6 +163,7 @@ const scrollActive = () => {
     });
 };
 
+
 scrollActive();
 
 
@@ -202,108 +203,109 @@ const tabs = () => {
 tabs();
 
 
-//slider
-const slider = () => {
-    let dot;
-    const slide = document.querySelectorAll('.portfolio-item');
-    const slider = document.querySelector('.portfolio-content');
-    const dotsWrapper = document.querySelector('.portfolio-dots');
-
-    const createDots = () => {
-        for (let i = 0; i < slide.length; i++) {
-            const item = document.createElement('li');
-            item.classList.add('dot');
-            dotsWrapper.append(item);
-        }
-        dot = document.querySelectorAll('.dot');
-        dot[0].classList.add('dot-active');
-    };
-    createDots();
-
-    let currentSlide = 0;
-    let interval;
-
-    const prevSlide = (elem, index, strClass) => {
-        elem[index].classList.remove(strClass);
-    };
-    const nextSlide = (elem, index, strClass) => {
-        elem[index].classList.add(strClass);
-
-    };
-
-    const autoPlaySlide = () => {
-        prevSlide(slide, currentSlide, 'portfolio-item-active');
-        prevSlide(dot, currentSlide, 'dot-active');
-        currentSlide++;
-        if (currentSlide >= slide.length) {
-            currentSlide = 0;
-        }
-        nextSlide(slide, currentSlide, 'portfolio-item-active');
-        nextSlide(dot, currentSlide, 'dot-active');
-    };
-
-    const startSlide = (time = 2000) => {
-        interval = setInterval(autoPlaySlide, time);
-    };
-
-    const stopSlide = () => {
-        clearInterval(interval);
-    };
-
-    handler(slider, 'click', e => {
-        e.preventDefault();
-        const target = e.target;
-
-
-        if (!target.matches('.portfolio-btn,.dot')) {
-            return;
-        }
-
-        prevSlide(slide, currentSlide, 'portfolio-item-active');
-        prevSlide(dot, currentSlide, 'dot-active');
-        if (target.matches('#arrow-right')) {
-            currentSlide++;
-        } else if (target.matches('#arrow-left')) {
-            currentSlide--;
-        } else if (target.matches('.dot')) {
-            dot.forEach((item, index) => {
-                if (item === target) {
-                    currentSlide = index;
-                }
-            });
-        }
-        if (currentSlide >= slide.length) {
-            currentSlide = 0;
-        }
-
-        if (currentSlide < 0) {
-            currentSlide = slide.length - 1;
-        }
-        nextSlide(slide, currentSlide, 'portfolio-item-active');
-        nextSlide(dot, currentSlide, 'dot-active');
-    });
-    handler(slider, 'mouseover', e => {
-        if ((e.target.matches('.portfolio-btn')) || (e.target.matches('.dot'))) {
-            stopSlide();
-        }
-    });
-    handler(slider, 'mouseout', e => {
-        if ((e.target.matches('.portfolio-btn')) || (e.target.matches('.dot'))) {
-            startSlide();
-        }
-    });
-    startSlide();
-};
-
-slider();
+// //slider
+// const slider = () => {
+//     let dot;
+//     const slide = document.querySelectorAll('.portfolio-item');
+//     const slider = document.querySelector('.portfolio-content');
+//     const dotsWrapper = document.querySelector('.portfolio-dots');
+//
+//     const createDots = () => {
+//         for (let i = 0; i < slide.length; i++) {
+//             const item = document.createElement('li');
+//             item.classList.add('dot');
+//             dotsWrapper.append(item);
+//         }
+//         dot = document.querySelectorAll('.dot');
+//         dot[0].classList.add('dot-active');
+//     };
+//     createDots();
+//
+//     let currentSlide = 0;
+//     let interval;
+//
+//     const prevSlide = (elem, index, strClass) => {
+//         elem[index].classList.remove(strClass);
+//     };
+//     const nextSlide = (elem, index, strClass) => {
+//         elem[index].classList.add(strClass);
+//
+//     };
+//
+//     const autoPlaySlide = () => {
+//         prevSlide(slide, currentSlide, 'portfolio-item-active');
+//         prevSlide(dot, currentSlide, 'dot-active');
+//         currentSlide++;
+//         if (currentSlide >= slide.length) {
+//             currentSlide = 0;
+//         }
+//         nextSlide(slide, currentSlide, 'portfolio-item-active');
+//         nextSlide(dot, currentSlide, 'dot-active');
+//     };
+//
+//     const startSlide = (time = 2000) => {
+//         interval = setInterval(autoPlaySlide, time);
+//     };
+//
+//     const stopSlide = () => {
+//         clearInterval(interval);
+//     };
+//
+//     handler(slider, 'click', e => {
+//         e.preventDefault();
+//         const target = e.target;
+//
+//
+//         if (!target.matches('.portfolio-btn,.dot')) {
+//             return;
+//         }
+//
+//         prevSlide(slide, currentSlide, 'portfolio-item-active');
+//         prevSlide(dot, currentSlide, 'dot-active');
+//         if (target.matches('#arrow-right')) {
+//             currentSlide++;
+//         } else if (target.matches('#arrow-left')) {
+//             currentSlide--;
+//         } else if (target.matches('.dot')) {
+//             dot.forEach((item, index) => {
+//                 if (item === target) {
+//                     currentSlide = index;
+//                 }
+//             });
+//         }
+//         if (currentSlide >= slide.length) {
+//             currentSlide = 0;
+//         }
+//
+//         if (currentSlide < 0) {
+//             currentSlide = slide.length - 1;
+//         }
+//         nextSlide(slide, currentSlide, 'portfolio-item-active');
+//         nextSlide(dot, currentSlide, 'dot-active');
+//     });
+//     handler(slider, 'mouseover', e => {
+//         if ((e.target.matches('.portfolio-btn')) || (e.target.matches('.dot'))) {
+//             stopSlide();
+//         }
+//     });
+//     handler(slider, 'mouseout', e => {
+//         if ((e.target.matches('.portfolio-btn')) || (e.target.matches('.dot'))) {
+//             startSlide();
+//         }
+//     });
+//     startSlide();
+// };
+//
+// slider();
 
 //images
 
 const photo = () => {
     let srcDefault;
+    const command = document.getElementById('command');
 
 
-    handler(this, 'mouseover', e => {
+    handler(command, 'mouseover', e => {
         const target = e.target;
         if (target.closest('.command__photo')) {
             srcDefault = target.src;
@@ -311,7 +313,7 @@ const photo = () => {
         }
     });
 
-    handler(this, 'mouseout', e => {
+    handler(command, 'mouseout', e => {
         const target = e.target;
         if (target.closest('.command__photo')) {
             target.src = srcDefault;
@@ -321,8 +323,10 @@ const photo = () => {
 
 photo();
 
+
+//calc
 const calc = (price = 100) => {
-    const inputsCalc = document.querySelectorAll('.calc-item');
+    const inputsCalc = document.querySelectorAll('.calc-item[type=number]');
     inputsCalc.forEach(item => {
         handler(item, 'input', () => {
             item.value = item.value.replace(/\D/g, '');
@@ -360,10 +364,10 @@ const calc = (price = 100) => {
         } else if (count > total) {
             const a = count - total;
             if (a > 1000 && a < 3000) {
-                count  -= 100;
+                count -= 100;
             } else if (a > 3000 && a < 20000) {
                 count -= 1000;
-            } else if (a > 30000) {
+            } else if (a > 20000) {
                 count -= 10000;
             } else if (a < 1000 && a > 100) {
                 count -= 10;
@@ -380,10 +384,16 @@ const calc = (price = 100) => {
         total = 0;
         let countValue = 1;
         let dayValue = 1;
+        const typeDataValue = calcType.options[calcType.selectedIndex].dataset.value;
         const typeValue = calcType.options[calcType.selectedIndex].value;
         const squareValue = +calcSquare.value;
 
-
+        if (typeValue === '0') {
+            inputsCalc.forEach(item => {
+                item.value = '';
+            });
+            totalValue.value = 0;
+        }
         if (calcCount.value > 1) {
             countValue += (calcCount.value - 1) / 10;
         }
@@ -394,13 +404,12 @@ const calc = (price = 100) => {
             dayValue *= 1.5;
         }
 
-        if (squareValue && typeValue) {
-            total = Math.floor(total = price * typeValue * squareValue * countValue * dayValue);
+        if (squareValue && typeDataValue) {
+            total = Math.floor(total = price * typeDataValue * squareValue * countValue * dayValue);
         }
 
         iterateResult();
     };
-
 
 
     handler(calcBlock, 'change', e => {
