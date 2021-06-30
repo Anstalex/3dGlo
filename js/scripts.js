@@ -1,5 +1,6 @@
 'use strict';
 const html = document.querySelector('html');
+maskPhone('.form-phone');
 //Timer
 window.addEventListener('DOMContentLoaded', () => {
 
@@ -72,7 +73,7 @@ const toggleMenu = () => {
     handler(document, 'click', e => {
         const target = e.target;
         if (((!target.closest('menu')) && (!target.closest('.menu'))) ||
-            (target.closest('li')) || target.closest('.close-btn')) {
+            (target.closest('li>a')) || target.closest('.close-btn')) {
             menuClose();
         } else if (target.closest('.menu')) {
             menuOpen();
@@ -204,99 +205,99 @@ tabs();
 
 
 //slider
-const slider = () => {
-    let dot;
-    const slide = document.querySelectorAll('.portfolio-item');
-    const slider = document.querySelector('.portfolio-content');
-    const dotsWrapper = document.querySelector('.portfolio-dots');
-
-    const createDots = () => {
-        for (let i = 0; i < slide.length; i++) {
-            const item = document.createElement('li');
-            item.classList.add('dot');
-            dotsWrapper.append(item);
-        }
-        dot = document.querySelectorAll('.dot');
-        dot[0].classList.add('dot-active');
-    };
-    createDots();
-
-    let currentSlide = 0;
-    let interval;
-
-    const prevSlide = (elem, index, strClass) => {
-        elem[index].classList.remove(strClass);
-    };
-    const nextSlide = (elem, index, strClass) => {
-        elem[index].classList.add(strClass);
-
-    };
-
-    const autoPlaySlide = () => {
-        prevSlide(slide, currentSlide, 'portfolio-item-active');
-        prevSlide(dot, currentSlide, 'dot-active');
-        currentSlide++;
-        if (currentSlide >= slide.length) {
-            currentSlide = 0;
-        }
-        nextSlide(slide, currentSlide, 'portfolio-item-active');
-        nextSlide(dot, currentSlide, 'dot-active');
-    };
-
-    const startSlide = (time = 2000) => {
-        interval = setInterval(autoPlaySlide, time);
-    };
-
-    const stopSlide = () => {
-        clearInterval(interval);
-    };
-
-    handler(slider, 'click', e => {
-        e.preventDefault();
-        const target = e.target;
-
-
-        if (!target.matches('.portfolio-btn,.dot')) {
-            return;
-        }
-
-        prevSlide(slide, currentSlide, 'portfolio-item-active');
-        prevSlide(dot, currentSlide, 'dot-active');
-        if (target.matches('#arrow-right')) {
-            currentSlide++;
-        } else if (target.matches('#arrow-left')) {
-            currentSlide--;
-        } else if (target.matches('.dot')) {
-            dot.forEach((item, index) => {
-                if (item === target) {
-                    currentSlide = index;
-                }
-            });
-        }
-        if (currentSlide >= slide.length) {
-            currentSlide = 0;
-        }
-
-        if (currentSlide < 0) {
-            currentSlide = slide.length - 1;
-        }
-        nextSlide(slide, currentSlide, 'portfolio-item-active');
-        nextSlide(dot, currentSlide, 'dot-active');
-    });
-    handler(slider, 'mouseover', e => {
-        if ((e.target.matches('.portfolio-btn')) || (e.target.matches('.dot'))) {
-            stopSlide();
-        }
-    });
-    handler(slider, 'mouseout', e => {
-        if ((e.target.matches('.portfolio-btn')) || (e.target.matches('.dot'))) {
-            startSlide();
-        }
-    });
-    startSlide();
-};
-
-slider();
+// const slider = () => {
+//     let dot;
+//     const slide = document.querySelectorAll('.portfolio-item');
+//     const slider = document.querySelector('.portfolio-content');
+//     const dotsWrapper = document.querySelector('.portfolio-dots');
+//
+//     const createDots = () => {
+//         for (let i = 0; i < slide.length; i++) {
+//             const item = document.createElement('li');
+//             item.classList.add('dot');
+//             dotsWrapper.append(item);
+//         }
+//         dot = document.querySelectorAll('.dot');
+//         dot[0].classList.add('dot-active');
+//     };
+//     createDots();
+//
+//     let currentSlide = 0;
+//     let interval;
+//
+//     const prevSlide = (elem, index, strClass) => {
+//         elem[index].classList.remove(strClass);
+//     };
+//     const nextSlide = (elem, index, strClass) => {
+//         elem[index].classList.add(strClass);
+//
+//     };
+//
+//     const autoPlaySlide = () => {
+//         prevSlide(slide, currentSlide, 'portfolio-item-active');
+//         prevSlide(dot, currentSlide, 'dot-active');
+//         currentSlide++;
+//         if (currentSlide >= slide.length) {
+//             currentSlide = 0;
+//         }
+//         nextSlide(slide, currentSlide, 'portfolio-item-active');
+//         nextSlide(dot, currentSlide, 'dot-active');
+//     };
+//
+//     const startSlide = (time = 2000) => {
+//         interval = setInterval(autoPlaySlide, time);
+//     };
+//
+//     const stopSlide = () => {
+//         clearInterval(interval);
+//     };
+//
+//     handler(slider, 'click', e => {
+//         e.preventDefault();
+//         const target = e.target;
+//
+//
+//         if (!target.matches('.portfolio-btn,.dot')) {
+//             return;
+//         }
+//
+//         prevSlide(slide, currentSlide, 'portfolio-item-active');
+//         prevSlide(dot, currentSlide, 'dot-active');
+//         if (target.matches('#arrow-right')) {
+//             currentSlide++;
+//         } else if (target.matches('#arrow-left')) {
+//             currentSlide--;
+//         } else if (target.matches('.dot')) {
+//             dot.forEach((item, index) => {
+//                 if (item === target) {
+//                     currentSlide = index;
+//                 }
+//             });
+//         }
+//         if (currentSlide >= slide.length) {
+//             currentSlide = 0;
+//         }
+//
+//         if (currentSlide < 0) {
+//             currentSlide = slide.length - 1;
+//         }
+//         nextSlide(slide, currentSlide, 'portfolio-item-active');
+//         nextSlide(dot, currentSlide, 'dot-active');
+//     });
+//     handler(slider, 'mouseover', e => {
+//         if ((e.target.matches('.portfolio-btn')) || (e.target.matches('.dot'))) {
+//             stopSlide();
+//         }
+//     });
+//     handler(slider, 'mouseout', e => {
+//         if ((e.target.matches('.portfolio-btn')) || (e.target.matches('.dot'))) {
+//             startSlide();
+//         }
+//     });
+//     startSlide();
+// };
+//
+// slider();
 
 //images
 
@@ -348,13 +349,13 @@ const calc = (price = 100) => {
             totalValue.textContent = total;
         } else if (count < total) {
             const a = total - count;
-            if (a > 1000 && a < 3000) {
+            if (a > 100 && a < 1000) {
                 count += 100;
-            } else if (a > 3000 && a < 20000) {
+            } else if (a > 1000 && a < 10000) {
                 count += 1000;
-            } else if (a > 20000) {
+            } else if (a > 10000) {
                 count += 10000;
-            } else if (a < 1000 && a > 100) {
+            } else if (a < 1000 && a > 10) {
                 count += 10;
             } else {
                 count++;
@@ -363,13 +364,13 @@ const calc = (price = 100) => {
             setTimeout(iterateResult, 1);
         } else if (count > total) {
             const a = count - total;
-            if (a > 1000 && a < 3000) {
+            if (a > 100 && a < 1000) {
                 count -= 100;
-            } else if (a > 3000 && a < 20000) {
+            } else if (a > 1000 && a < 10000) {
                 count -= 1000;
-            } else if (a > 20000) {
+            } else if (a > 10000) {
                 count -= 10000;
-            } else if (a < 1000 && a > 100) {
+            } else if (a < 100 && a > 10) {
                 count -= 10;
             } else {
                 count--;
@@ -486,5 +487,56 @@ const connect = () => {
     });
 };
 
-
 connect();
+
+//send-ajax-form
+
+const sendForm = () => {
+    const errorMessage = 'Что-то пошло не так';
+    const loadMessage = 'Загрузка...';
+    const successMessage = 'Спасибо!Мы скоро с вами свяжемся!';
+
+    const form = document.getElementById('form1');
+
+
+    const statusMessages = document.createElement('div');
+    statusMessages.textContent = 'Тут будет сообзение';
+    statusMessages.style.cssText = 'font-size: 2rem;';
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        form.appendChild(statusMessages);
+
+        const request = new XMLHttpRequest();
+
+        request.addEventListener('readystatechange', () => {
+            statusMessages.textContent = loadMessage;
+
+            if (request.readyState !== 4) {
+                return;
+            }
+            if (request.readyState === 200) {
+                statusMessages.textContent = successMessage;
+            } else {
+                statusMessages.textContent = errorMessage;
+            }
+        });
+
+        request.open('POST', './server.php');
+        request.setRequestHeader('Content-Type', 'multipart/form-data');
+        const formData = new FormData(form);
+        request.send(formData);
+
+        const body = {};
+        for (const val of formData.entries()) {
+            body[val[0]] = val[1];
+        }
+
+    });
+};
+
+sendForm();
+
+// const endpoint = 'https://swapi.dev/api/';
+
+
