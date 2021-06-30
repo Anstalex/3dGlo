@@ -436,20 +436,23 @@ const connect = () => {
         item.value = item.value.replace(/^-*/g, '').replace(/-*$/g, '').replace(/(-)\1+/g, '-');
     };
 
-    const regExpStr = input => {
-        input.value = input.value.replace(/[^а-яё\s?-]+/gi, '');
+    const regExpName = input => {
+        input.value = input.value.replace(/[^\sа-яё]+/gi, '');
+    };
+    const regExpMessages = input => {
+        input.value = input.value.replace(/[^а-яё0-9\s.,;:?!\-"'()]+/gi, '');
     };
 
     const regExpMail = input => {
-        input.value = input.value.replace(/[^\s][^a-z*'_.@~ !-]+/gi, ''.trim());
+        input.value = input.value.replace(/[^a-z0-9\-@_.]+/gi, '');
     };
 
     const regExpPhone = input => {
-        input.value = input.value.replace(/[^-()\d]/g, '');
+        input.value = input.value.replace(/[^-+()\d]/g, '');
     };
 
     inputText.forEach(item => {
-        handler(item, 'blur', e => {
+        handler(item, 'blur', () => {
             regDash(item);
             const arr = item.value.split(' ');
             const newArr = arr.filter(elem => {
@@ -458,9 +461,11 @@ const connect = () => {
                 }
             });
             item.value = newArr.join(' ');
-            if ((e.target.matches('#form2-name')) || (e.target.matches('#form1-name'))) {
+        });
+        handler(item, 'input', e => {
+            if (e.target.matches('.form-name')) {
                 inputsName.forEach(item => {
-                    regExpStr(item);
+                    regExpName(item);
                     if (item.value !== '') {
                         item.value = item.value[0].toUpperCase() +
                             item.value.substring(1, item.value.length);
@@ -468,18 +473,20 @@ const connect = () => {
                 });
 
             } else if (e.target.matches('#form2-message')) {
-                regExpStr(inputMessage);
-            } else if ((e.target.matches('#form2-email')) || (e.target.matches('#form1-email'))) {
+                if (item.value !== '') {
+                    item.value = item.value[0].toUpperCase() +
+                        item.value.substring(1, item.value.length);
+                }
+                regExpMessages(inputMessage);
+            } else if (e.target.matches('.form-email')) {
                 inputsEmail.forEach(item => {
                     regExpMail(item);
-
                 });
             } else if ((e.target.matches('#form2-phone')) || (e.target.matches('#form1-phone'))) {
                 inputsPhone.forEach(item => {
                     regExpPhone(item);
                 });
             }
-
             if (!item.value.toString().match(/[а-яёa-z0-9]/gi)) {
                 item.value = '';
             }
@@ -493,47 +500,72 @@ connect();
 
 const sendForm = () => {
     const errorMessage = 'Что-то пошло не так';
-    const loadMessage = 'Загрузка...';
+    const loadMessage = `<div class="ldio-preload">
+                <div></div><div></div><div></div><div></div><div></div>
+                <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                </div>`;
     const successMessage = 'Спасибо!Мы скоро с вами свяжемся!';
 
-    const form = document.getElementById('form1');
-
+    const form1 = document.getElementById('form1');
+    const form2 = document.getElementById('form2');
+    const formModal = document.getElementById('form3');
 
     const statusMessages = document.createElement('div');
-    statusMessages.textContent = 'Тут будет сообзение';
-    statusMessages.style.cssText = 'font-size: 2rem;';
+    statusMessages.style.cssText = `font-size: 2rem; min-height: 30px; margin: 30px 0; color:#ffffff;`;
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        form.appendChild(statusMessages);
-
+    const postData = (body, outputData, errorData) => {
         const request = new XMLHttpRequest();
 
         request.addEventListener('readystatechange', () => {
-            statusMessages.textContent = loadMessage;
-
             if (request.readyState !== 4) {
                 return;
             }
-            if (request.readyState === 200) {
-                statusMessages.textContent = successMessage;
+            if (request.status === 200) {
+                outputData();
             } else {
-                statusMessages.textContent = errorMessage;
+                errorData(request.status);
             }
         });
 
         request.open('POST', './server.php');
-        request.setRequestHeader('Content-Type', 'multipart/form-data');
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.send(JSON.stringify(body));
+    };
+    const renderData = (event, form) => {
+        const formInputs = form.querySelectorAll('input');
+        event.preventDefault();
+        form.appendChild(statusMessages);
+        statusMessages.innerHTML = loadMessage;
         const formData = new FormData(form);
-        request.send(formData);
 
         const body = {};
+
         for (const val of formData.entries()) {
             body[val[0]] = val[1];
+            postData(body, () => {
+                statusMessages.textContent = successMessage;
+            }, error => {
+                statusMessages.textContent = errorMessage;
+                console.error(error);
+            });
         }
+        for (const item of formInputs) {
+            item.value = '';
+        }
+    };
 
+    form1.addEventListener('submit', e => {
+        renderData(e, form1);
     });
+    form2.addEventListener('submit', e => {
+        renderData(e, form2);
+    });
+    formModal.addEventListener('submit', e => {
+        renderData(e, formModal);
+    });
+
 };
+
 
 sendForm();
 
