@@ -1,6 +1,42 @@
 'use strict';
 const html = document.querySelector('html');
+
+function maskPhone(selector, masked = '+7 (___) ___-__-__') {
+    const elems = document.querySelectorAll(selector);
+
+    function mask(event) {
+        const keyCode = event.keyCode;
+        const template = masked,
+            def = template.replace(/\D/g, ""),
+            val = this.value.replace(/\D/g, "");
+        let i = 0,
+            newValue = template.replace(/[_\d]/g, a => (i < val.length ? val.charAt(i++) || def.charAt(i) : a));
+        i = newValue.indexOf("_");
+        if (i !== -1) {
+            newValue = newValue.slice(0, i);
+        }
+        let reg = template.substr(0, this.value.length).replace(/_+/g,
+            a => "\\d{1," + a.length + "}").replace(/[+()]/g, "\\$&");
+        reg = new RegExp("^" + reg + "$");
+        if (!reg.test(this.value) || this.value.length < 5 || keyCode > 47 && keyCode < 58) {
+            this.value = newValue;
+        }
+        if (event.type === "blur" && this.value.length < 5) {
+            this.value = "";
+        }
+
+    }
+
+    for (const elem of elems) {
+        elem.addEventListener("input", mask);
+        elem.addEventListener("focus", mask);
+        elem.addEventListener("blur", mask);
+    }
+
+}
+
 maskPhone('.form-phone');
+
 //Timer
 window.addEventListener('DOMContentLoaded', () => {
 
@@ -133,37 +169,17 @@ togglePopup();
 
 //scroll
 const scrollActive = () => {
-    let countScroll = 0;
-    let scrollAnimate;
     const btnScroll = document.querySelector('a>img');
-    const main = document.querySelector('main');
-
-    const scrollDown = () => {
-        countScroll = html.scrollTop;
-        if (html.scrollTop < main.scrollHeight) {
-            scrollAnimate = requestAnimationFrame(scrollDown);
-            countScroll += 20;
-            html.scrollTop = countScroll;
-        } else {
-            cancelAnimationFrame(scrollAnimate);
-            countScroll = 0;
-        }
-    };
+    const service = document.getElementById('service-block');
 
     handler(btnScroll, 'click', e => {
         e.preventDefault();
-        requestAnimationFrame(scrollDown);
-    });
-    handler(document, 'wheel', () => {
-        countScroll = 0;
-        cancelAnimationFrame(scrollAnimate);
-    });
-    handler(document, 'click', () => {
-        countScroll = 0;
-        cancelAnimationFrame(scrollAnimate);
+        service.scrollIntoView({
+            block: "start",
+            behavior: "smooth"
+        });
     });
 };
-
 
 scrollActive();
 
@@ -429,31 +445,53 @@ const connect = () => {
     const inputsEmail = document.querySelectorAll('.form-email');
     const inputsName = document.querySelectorAll('.form-name');
 
+
     const inputText = document.querySelectorAll('input');
     const inputMessage = document.getElementById('form2-message');
 
     const regDash = item => {
         item.value = item.value.replace(/^-*/g, '').replace(/-*$/g, '').replace(/(-)\1+/g, '-');
     };
-
     const regExpName = input => {
         input.value = input.value.replace(/[^\sа-яё]+/gi, '');
     };
     const regExpMessages = input => {
         input.value = input.value.replace(/[^а-яё0-9\s.,;:?!\-"'()]+/gi, '');
     };
-
     const regExpMail = input => {
         input.value = input.value.replace(/[^a-z0-9\-@_.]+/gi, '');
     };
-
     const regExpPhone = input => {
         input.value = input.value.replace(/[^-+()\d]/g, '');
     };
-
+    const isValid = (item, condition, text) => {
+        if (condition) {
+            item.classList.add('valid');
+            item.classList.remove('invalid');
+            return true;
+        } else {
+            item.classList.add('invalid');
+            item.classList.remove('valid');
+            item.value = '';
+            item.placeholder = text;
+            return false;
+        }
+    };
     inputText.forEach(item => {
-        handler(item, 'blur', () => {
+        handler(item, 'blur', e => {
             regDash(item);
+            if (e.target.matches('.form-name')) {
+                isValid(item, item.value.length > 1, 'Введите не менее 2 символов');
+            } else if (e.target.matches('.form-email')) {
+                isValid(item, ((item.value.length > 5) &&
+                    (item.value.match(/.{2,}@(.{2,})\..{2,}/))), 'e-mail в формате kkk@mail.ru');
+            } else if (e.target.matches('.form-phone')) {
+                isValid(item, ((item.value.length === 0) ||
+                    (item.value.length === 18)), 'Телефон должен содержать 11 цифр');
+            } else if (e.target.matches('#form2-message')) {
+                isValid(item, ((item.value.length > 5) ||
+                    (item.value.length === 0)), 'Сообщение не должно быть  короче 5 символов');
+            }
             const arr = item.value.split(' ');
             const newArr = arr.filter(elem => {
                 if (elem.trim() !== '') {
@@ -482,7 +520,7 @@ const connect = () => {
                 inputsEmail.forEach(item => {
                     regExpMail(item);
                 });
-            } else if ((e.target.matches('#form2-phone')) || (e.target.matches('#form1-phone'))) {
+            } else if (e.target.matches('.form-phone')) {
                 inputsPhone.forEach(item => {
                     regExpPhone(item);
                 });
@@ -492,13 +530,16 @@ const connect = () => {
             }
         });
     });
+
 };
+
 
 connect();
 
 //send-ajax-form
 
 const sendForm = () => {
+    const message = document.getElementById('form2-message');
     const errorMessage = 'Что-то пошло не так';
     const loadMessage = `<div class="ldio-preload">
                 <div></div><div></div><div></div><div></div><div></div>
@@ -551,6 +592,10 @@ const sendForm = () => {
         }
         for (const item of formInputs) {
             item.value = '';
+            message.value = '';
+            item.classList.remove('invalid');
+            item.classList.remove('valid');
+
         }
     };
 
@@ -569,6 +614,5 @@ const sendForm = () => {
 
 sendForm();
 
-// const endpoint = 'https://swapi.dev/api/';
 
 

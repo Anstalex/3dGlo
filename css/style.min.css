@@ -1161,3 +1161,11 @@ footer .web {
         left: 5px
     }
 }
+.invalid{
+    background-color: #ffdddd;
+    border: 5px solid #ffdddd;
+}
+.valid {
+    background-color: #ddffdd;
+    border: 5px solid #ddffdd;
+}
