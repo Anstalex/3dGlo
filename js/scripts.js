@@ -554,7 +554,7 @@ const sendForm = () => {
     const statusMessages = document.createElement('div');
     statusMessages.style.cssText = `font-size: 2rem; min-height: 30px; margin: 30px 0; color:#ffffff;`;
 
-    const postData = (body, outputData, errorData) => {
+    const postData = body => new Promise((resolve, reject) => {
         const request = new XMLHttpRequest();
 
         request.addEventListener('readystatechange', () => {
@@ -562,16 +562,16 @@ const sendForm = () => {
                 return;
             }
             if (request.status === 200) {
-                outputData();
+                resolve();
             } else {
-                errorData(request.status);
+                reject(request.status);
             }
         });
 
         request.open('POST', './server.php');
         request.setRequestHeader('Content-Type', 'application/json');
         request.send(JSON.stringify(body));
-    };
+    });
     const renderData = (event, form) => {
         const formInputs = form.querySelectorAll('input');
         event.preventDefault();
@@ -580,23 +580,32 @@ const sendForm = () => {
         const formData = new FormData(form);
 
         const body = {};
-
+        let test;
         for (const val of formData.entries()) {
             body[val[0]] = val[1];
-            postData(body, () => {
+            test = postData(body);
+
+            test.then(response => {
                 statusMessages.textContent = successMessage;
-            }, error => {
+            });
+
+            test.catch(error => {
                 statusMessages.textContent = errorMessage;
                 console.error(error);
             });
         }
-        for (const item of formInputs) {
-            item.value = '';
-            message.value = '';
-            item.classList.remove('invalid');
-            item.classList.remove('valid');
+        const iterate = () => {
+            for (const item of formInputs) {
+                item.value = '';
+                message.value = '';
+                item.classList.remove('invalid');
+                item.classList.remove('valid');
+            }
+        };
+        test
+            .then(iterate)
+            .catch(error => console.error(error));
 
-        }
     };
 
     form1.addEventListener('submit', e => {
