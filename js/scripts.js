@@ -536,6 +536,7 @@ const connect = () => {
 
 connect();
 
+
 //send-ajax-form
 
 const sendForm = () => {
@@ -554,24 +555,14 @@ const sendForm = () => {
     const statusMessages = document.createElement('div');
     statusMessages.style.cssText = `font-size: 2rem; min-height: 30px; margin: 30px 0; color:#ffffff;`;
 
-    const postData = body => new Promise((resolve, reject) => {
-        const request = new XMLHttpRequest();
-
-        request.addEventListener('readystatechange', () => {
-            if (request.readyState !== 4) {
-                return;
-            }
-            if (request.status === 200) {
-                resolve();
-            } else {
-                reject(request.status);
-            }
-        });
-
-        request.open('POST', './server.php');
-        request.setRequestHeader('Content-Type', 'application/json');
-        request.send(JSON.stringify(body));
+    const postData = body => fetch('./server.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
     });
+
     const renderData = (event, form) => {
         const formInputs = form.querySelectorAll('input');
         event.preventDefault();
@@ -585,14 +576,17 @@ const sendForm = () => {
             body[val[0]] = val[1];
             test = postData(body);
 
-            test.then(response => {
-                statusMessages.textContent = successMessage;
-            });
-
-            test.catch(error => {
-                statusMessages.textContent = errorMessage;
-                console.error(error);
-            });
+            test
+                .then(response => {
+                    if (response.status !== 200) {
+                        throw new Error('Status network not correct');
+                    }
+                    statusMessages.textContent = successMessage;
+                })
+                .catch(error => {
+                    statusMessages.textContent = errorMessage;
+                    console.error(error);
+                });
         }
         const iterate = () => {
             for (const item of formInputs) {
@@ -602,9 +596,7 @@ const sendForm = () => {
                 item.classList.remove('valid');
             }
         };
-        test
-            .then(iterate)
-            .catch(error => console.error(error));
+        iterate();
 
     };
 
