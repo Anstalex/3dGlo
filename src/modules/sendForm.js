@@ -41,6 +41,9 @@ const sendForm = () => {
                         throw new Error('Status network not correct');
                     }
                     statusMessages.textContent = successMessage;
+                }).then(() => {
+                    setTimeout(() => { statusMessages.textContent = ''; }, 500);
+
                 })
                 .catch(error => {
                     statusMessages.textContent = errorMessage;
