@@ -1,3 +1,5 @@
+import { popupHide } from "./togglePopup";
+
 const sendForm = () => {
     const message = document.getElementById('form2-message');
     const errorMessage = 'Что-то пошло не так';
@@ -33,23 +35,25 @@ const sendForm = () => {
         let test;
         for (const val of formData.entries()) {
             body[val[0]] = val[1];
-            test = postData(body);
-
-            test
-                .then(response => {
-                    if (response.status !== 200) {
-                        throw new Error('Status network not correct');
-                    }
-                    statusMessages.textContent = successMessage;
-                }).then(() => {
-                    setTimeout(() => { statusMessages.textContent = ''; }, 500);
-
-                })
-                .catch(error => {
-                    statusMessages.textContent = errorMessage;
-                    console.error(error);
-                });
         }
+        test = postData(body);
+
+        test
+            .then(response => {
+                if (response.status !== 200) {
+                    throw new Error('Status network not correct');
+                }
+                statusMessages.textContent = successMessage;
+            }).then(() => {
+                setTimeout(() => {
+                    statusMessages.textContent = '';
+                    popupHide();
+                }, 1000);
+            }).catch(error => {
+                statusMessages.textContent = errorMessage;
+                console.error(error);
+            });
+
         const iterate = () => {
             for (const item of formInputs) {
                 item.value = '';

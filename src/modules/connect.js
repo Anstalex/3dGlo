@@ -1,4 +1,5 @@
-import handler from "./handler";
+import handler from "./handler.js";
+
 
 
 const connect = () => {

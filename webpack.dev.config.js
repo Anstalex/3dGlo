@@ -8,10 +8,10 @@ module.exports = {
     },
     mode: "development",
     devServer: {
-        open:true,
-        port:'8080',
+        open: true,
+        port: '8080',
         hot: true,
-        writeToDick:true,
+        writeToDick: true,
     },
     module: {
         rules: [

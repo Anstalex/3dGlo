@@ -752,6 +752,7 @@ footer .web {
 
 .popup {
     display: none;
+    transition: all 1s ease;
     position: fixed;
     left: 0;
     top: 0;
