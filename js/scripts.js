@@ -57,11 +57,7 @@ window.addEventListener('DOMContentLoaded', () => {
 const handler = (item, event, callback) => {
     item.addEventListener(event, callback);
 };
-// const handlerArray = (items, event, callback) => {
-//     for (const key of items) {
-//         key.addEventListener(event, callback);
-//     }
-// };
+
 
 const toggleMenu = () => {
     const menu = document.querySelector('menu');
@@ -210,7 +206,6 @@ tabs();
 const slider = () => {
     let dot;
     const slide = document.querySelectorAll('.portfolio-item');
-    // const btn = document.querySelectorAll('.portfolio-btn');
     const slider = document.querySelector('.portfolio-content');
     const dotsWrapper = document.querySelector('.portfolio-dots');
 
@@ -301,3 +296,107 @@ const slider = () => {
 };
 
 slider();
+
+//images
+
+const photo = () => {
+    let srcDefault;
+
+
+    handler(this, 'mouseover', e => {
+        const target = e.target;
+        if (target.closest('.command__photo')) {
+            srcDefault = target.src;
+            target.src = target.dataset.img;
+        }
+    });
+
+    handler(this, 'mouseout', e => {
+        const target = e.target;
+        if (target.closest('.command__photo')) {
+            target.src = srcDefault;
+        }
+    });
+};
+
+photo();
+
+const calc = () => {
+    const inputsCalc = document.querySelectorAll('.calc-item');
+    inputsCalc.forEach(item => {
+        handler(item, 'blur', () => {
+            item.value = item.value.replace(/\D/g, '');
+        });
+
+    });
+};
+
+calc();
+
+const connect = () => {
+    const inputText = document.querySelectorAll('input');
+    const inputName = document.getElementById('form2-name');
+    const inputMessage = document.getElementById('form2-message');
+    const inputMail = document.getElementById('form2-email');
+    const inputPhone = document.getElementById('form2-phone');
+
+    const regDash = item => {
+        item.value = item.value.replace(/^-*/g, '').replace(/-*$/g, '').replace(/(-)\1+/g, '-');
+    };
+    inputText.forEach(elem => {
+        handler(elem, 'blur', () => {
+            regDash(elem);
+        });
+
+    });
+    const regExpStr = input => {
+        input.value = input.value.replace(/[^а-яё\s?-]+/gi, '');
+    };
+
+    const regExpMail = input => {
+        input.value = input.value.replace(/[^\s][^a-z*'_.@~ !-]+/gi, ''.trim());
+    };
+
+    const regExpPhone = input => {
+        input.value = input.value.replace(/[^-()\d]/g, '');
+    };
+
+    inputText.forEach(item => {
+        handler(item, 'blur', e => {
+            const arr = item.value.split(' ');
+            const newArr = arr.filter(elem => {
+                if (elem.trim() !== '') {
+                    return true;
+                }
+            });
+            item.value  = newArr.join(' ');
+            if (e.target.matches('#form2-name')) {
+                regExpStr(inputName);
+                if (inputName.value !== '') {
+                    inputName.value = inputName.value[0].toUpperCase() +
+                        inputName.value.substring(1, inputName.value.length);
+                }
+            } else if (e.target.matches('#form2-message')) {
+                regExpStr(inputMessage);
+            } else if (e.target.matches('#form2-email')) {
+                regExpMail(inputMail);
+            } else if (e.target.matches('#form2-phone')) {
+                regExpPhone(inputPhone);
+            }
+
+
+            //     newArr.filter((elem) => {
+            //         if (elem.trim() !== ''){
+            //             return true
+            //         });
+            //     console.log(newArr);
+            //
+            // const res = newArr.join(',');
+            // console.log(res);
+        });
+    });
+};
+
+
+
+connect();
