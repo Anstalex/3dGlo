@@ -52,6 +52,10 @@ const sendForm = () => {
             }).catch(error => {
                 statusMessages.textContent = errorMessage;
                 console.error(error);
+                setTimeout(() => {
+                    statusMessages.textContent = '';
+                    popupHide();
+                }, 1000);
             });
 
         const iterate = () => {
