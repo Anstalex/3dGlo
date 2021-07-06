@@ -46,14 +46,14 @@ const sendForm = () => {
                 statusMessages.textContent = successMessage;
             }).then(() => {
                 setTimeout(() => {
-                    statusMessages.textContent = '';
+                    form.removeChild(statusMessages);
                     popupHide();
                 }, 1000);
             }).catch(error => {
                 statusMessages.textContent = errorMessage;
                 console.error(error);
                 setTimeout(() => {
-                    statusMessages.textContent = '';
+                    form.removeChild(statusMessages);
                     popupHide();
                 }, 1000);
             });
