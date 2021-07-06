@@ -2,7 +2,7 @@ import handler from "./handler.js";
 
 
 const html = document.querySelector('html');
-let count = '-20';
+let count = -20;
 const popupContent = document.querySelector('.popup-content');
 const popup = document.querySelector('.popup');
 let idAnimate;
@@ -10,8 +10,8 @@ let idAnimate;
 const popupShow = () => {
     popup.style.display = 'block';
     popupContent.style.display = 'block';
-
     if ((count < 38) && (html.clientWidth >= 768)) {
+
         count += 2;
         popupContent.style.left = `${count}%`;
         idAnimate = requestAnimationFrame(popupShow);
@@ -21,8 +21,8 @@ const popupShow = () => {
         idAnimate = requestAnimationFrame(popupShow);
     } else {
         cancelAnimationFrame(idAnimate);
-    }
 
+    }
 };
 
 export const popupHide = () => {
@@ -30,7 +30,7 @@ export const popupHide = () => {
         idAnimate = requestAnimationFrame(popupHide);
         count += 2;
         popupContent.style.left = `${count}%`;
-    } else if ((count > +20) && (html.clientWidth >= 768)) {
+    } else if ((count > 20 && count < 100) && (html.clientWidth <= 768)) {
         count += 2;
         popupContent.style.left = `${count}%`;
         idAnimate = requestAnimationFrame(popupShow);
@@ -40,6 +40,8 @@ export const popupHide = () => {
         popupContent.style.display = 'none';
         count = -20;
     }
+
+
 };
 
 export default () => handler(document, 'click', e => {
