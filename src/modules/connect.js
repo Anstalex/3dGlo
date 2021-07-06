@@ -48,8 +48,7 @@ const connect = () => {
                 isValid(item, ((item.value.length > 5) &&
                     (item.value.match(/.{2,}@(.{2,})\..{2,}/))), 'e-mail в формате kkk@mail.ru');
             } else if (e.target.matches('.form-phone')) {
-                isValid(item, ((item.value.length === 0) ||
-                    (item.value.length === 18)), 'Телефон должен содержать 11 цифр');
+                isValid(item, (item.value.length === 18), 'Телефон должен содержать 11 цифр');
             } else if (e.target.matches('#form2-message')) {
                 isValid(item, ((item.value.length > 5) ||
                     (item.value.length === 0)), 'Сообщение не должно быть  короче 5 символов');

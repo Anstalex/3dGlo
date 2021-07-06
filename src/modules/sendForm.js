@@ -25,49 +25,69 @@ const sendForm = () => {
     });
 
     const renderData = (event, form) => {
-        const formInputs = form.querySelectorAll('input');
         event.preventDefault();
-        form.appendChild(statusMessages);
-        statusMessages.innerHTML = loadMessage;
-        const formData = new FormData(form);
+        const formInputs = form.querySelectorAll('input');
+        let testInputs;
+        const newInputs = Array.prototype.slice.call(formInputs);
+        const inputBoolean = newInputs.every(elem => elem.value !== '');
+        if (inputBoolean) {
+            form.appendChild(statusMessages);
+            statusMessages.innerHTML = loadMessage;
+            const formData = new FormData(form);
 
-        const body = {};
-        let test;
-        for (const val of formData.entries()) {
-            body[val[0]] = val[1];
-        }
-        test = postData(body);
-
-        test
-            .then(response => {
-                if (response.status !== 200) {
-                    throw new Error('Status network not correct');
-                }
-                statusMessages.textContent = successMessage;
-            }).then(() => {
-                setTimeout(() => {
-                    form.removeChild(statusMessages);
-                    popupHide();
-                }, 1000);
-            }).catch(error => {
-                statusMessages.textContent = errorMessage;
-                console.error(error);
-                setTimeout(() => {
-                    form.removeChild(statusMessages);
-                    popupHide();
-                }, 1000);
-            });
-
-        const iterate = () => {
-            for (const item of formInputs) {
-                item.value = '';
-                message.value = '';
-                item.classList.remove('invalid');
-                item.classList.remove('valid');
+            const body = {};
+            let test;
+            for (const val of formData.entries()) {
+                body[val[0]] = val[1];
             }
-        };
-        iterate();
+            test = postData(body);
 
+            test
+                .then(response => {
+                    if (response.status !== 200) {
+                        throw new Error('Status network not correct');
+                    }
+                    statusMessages.textContent = successMessage;
+                }).then(() => {
+                    setTimeout(() => {
+                        form.removeChild(statusMessages);
+                        popupHide();
+                    }, 1000);
+                }).catch(error => {
+                    statusMessages.textContent = errorMessage;
+                    console.error(error);
+                    setTimeout(() => {
+                        form.removeChild(statusMessages);
+
+                        popupHide();
+                    }, 1000);
+                });
+
+            const iterate = () => {
+                for (const item of formInputs) {
+                    item.placeholder = item.dataset.name;
+                    item.value = '';
+                    message.value = '';
+                    item.classList.remove('invalid');
+                    item.classList.remove('valid');
+                }
+            };
+            iterate();
+        } else {
+            formInputs.forEach(item => {
+                testInputs = () => {
+                    if (!item.value) {
+                        item.classList.add('invalid');
+                        item.classList.remove('valid');
+                        item.placeholder = 'Поле обязательно к заполнению';
+                    } else {
+                        item.classList.remove('invalid');
+                        item.classList.add('valid');
+                    }
+                };
+                testInputs();
+            });
+        }
     };
 
     form1.addEventListener('submit', e => {
