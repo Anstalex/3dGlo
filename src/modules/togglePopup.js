@@ -9,6 +9,8 @@ let idAnimate;
 
 const popupShow = () => {
     popup.style.display = 'block';
+    popupContent.style.display = 'block';
+
     if ((count < 38) && (html.clientWidth >= 768)) {
         count += 2;
         popupContent.style.left = `${count}%`;
@@ -35,6 +37,7 @@ export const popupHide = () => {
     } else {
         cancelAnimationFrame(popupHide);
         popup.style.display = 'none';
+        popupContent.style.display = 'none';
         count = -20;
     }
 };
