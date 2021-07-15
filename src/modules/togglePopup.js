@@ -8,37 +8,41 @@ const popup = document.querySelector('.popup');
 let idAnimate;
 
 const popupShow = () => {
-    popup.style.display = 'block';
-    popupContent.style.display = 'block';
-    if ((count < 38) && (html.clientWidth >= 768)) {
-
-        count += 2;
-        popupContent.style.left = `${count}%`;
-        idAnimate = requestAnimationFrame(popupShow);
-    } else if ((count < 20) && (html.clientWidth < 768)) {
-        count += 2;
-        popupContent.style.left = `${count}%`;
-        idAnimate = requestAnimationFrame(popupShow);
-    } else {
-        cancelAnimationFrame(idAnimate);
-
+    if (html.clientWidth > 768) {
+        if (count < 50) {
+            popup.style.display = 'block';
+            popupContent.style.display = 'block';
+            popupContent.style.transform = 'translateX(-50%)';
+            count += 2;
+            popupContent.style.left = `${count}%`;
+            idAnimate = requestAnimationFrame(popupShow);
+        } else {
+            cancelAnimationFrame(idAnimate);
+        }
+    } else if (html.clientWidth <= 768) {
+        popup.style.display = 'block';
+        popupContent.style.display = 'block';
+        popupContent.style.left = '50%';
+        popupContent.style.transform = 'translateX(-50%)';
     }
 };
 
 export const popupHide = () => {
-    if ((count >= 38 && count < 100) && (html.clientWidth > 768)) {
-        idAnimate = requestAnimationFrame(popupHide);
-        count += 2;
-        popupContent.style.left = `${count}%`;
-    } else if ((count > 20 && count < 100) && (html.clientWidth <= 768)) {
-        count += 2;
-        popupContent.style.left = `${count}%`;
-        idAnimate = requestAnimationFrame(popupShow);
-    } else {
-        cancelAnimationFrame(popupHide);
+    popupContent.style.transform = '';
+    if (html.clientWidth > 768) {
+        if (count >= 50 && count < 100) {
+            idAnimate = requestAnimationFrame(popupHide);
+            count += 2;
+            popupContent.style.left = `${count}%`;
+        } else {
+            cancelAnimationFrame(popupHide);
+            popup.style.display = 'none';
+            popupContent.style.display = 'none';
+            count = -20;
+        }
+    } else if (html.clientWidth <= 768) {
         popup.style.display = 'none';
         popupContent.style.display = 'none';
-        count = -20;
     }
 
 
@@ -51,7 +55,7 @@ export default () => handler(document, 'click', e => {
     }
     if (target.matches('.popup-close')) {
         requestAnimationFrame(popupHide);
-    } else if (!target.closest('.popup-content')) {
+    } else if ((!target.closest('.popup-content')) && (!target.closest('.popup-btn'))) {
         requestAnimationFrame(popupHide);
     }
 });
